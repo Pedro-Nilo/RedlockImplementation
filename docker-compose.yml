@@ -1,0 +1,36 @@
+version: "3.9"
+networks:
+  redlock-netwwork:
+volumes:
+  mongodb:
+services:
+  redlockworker:
+    build:
+      context: ./source/Redlock.Worker
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    networks:
+        - redlock-netwwork
+    deploy:
+      mode: replicated
+      replicas: 3
+    container_name: redlockworker
+  redis:
+    image: "redis:alpine"
+    restart: on-failure
+    networks:
+        - redlock-netwwork
+    container_name: redis
+  mongodb:
+    image: mongo:latest
+    restart: on-failure
+    volumes:
+        - mongodb:/data/db
+    networks:
+        - redlock-netwwork
+    ports:
+        - 27017:27017
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: 123
+    container_name: mongodb
