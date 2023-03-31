@@ -6,15 +6,11 @@ volumes:
 services:
   redlockworker:
     build:
-      context: ./source/Redlock.Worker
-      dockerfile: ./Dockerfile
+      context: ./source
+      dockerfile: ./Redlock.Worker/Dockerfile
     restart: on-failure
     networks:
         - redlock-netwwork
-    deploy:
-      mode: replicated
-      replicas: 3
-    container_name: redlockworker
   redis:
     image: "redis:alpine"
     restart: on-failure
@@ -22,7 +18,7 @@ services:
         - redlock-netwwork
     container_name: redis
   mongodb:
-    image: mongo:latest
+    image: "mongo:latest"
     restart: on-failure
     volumes:
         - mongodb:/data/db
